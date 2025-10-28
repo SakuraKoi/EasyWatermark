@@ -242,15 +242,22 @@ public class MainForm extends JFrame {
     }
 
     private void btnSave(ActionEvent e) {
-        File outputFile = new File(processingFile.getParentFile(), "watermarked_" + FilenameUtils.removeExtension(processingFile.getName()) + ".png");
-        try {
-            javax.imageio.ImageIO.write(watermarkedImage, "PNG", outputFile);
-            btnSave.setText("Save [OK!]");
-            //JOptionPane.showMessageDialog(this, "Saved to " + outputFile.getAbsolutePath(), "Saved", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to save image: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        var processingFile = this.processingFile;
+        var watermarkedImage = this.watermarkedImage;
+
+        new Thread(() -> {
+            File outputFile = new File(processingFile.getParentFile(), "watermarked_" + FilenameUtils.removeExtension(processingFile.getName()) + ".png");
+            try {
+                javax.imageio.ImageIO.write(watermarkedImage, "PNG", outputFile);
+                //JOptionPane.showMessageDialog(this, "Saved to " + outputFile.getAbsolutePath(), "Saved", JOptionPane.INFORMATION_MESSAGE);
+                SwingUtilities.invokeLater(() -> {
+                    btnSave.setText("Save [OK!]");
+                });
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to save image: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }).start();
     }
 
     private void initComponents() {
