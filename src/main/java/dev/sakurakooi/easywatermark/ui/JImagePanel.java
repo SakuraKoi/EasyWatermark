@@ -31,6 +31,13 @@ public class JImagePanel extends JPanel {
         });
     }
 
+    public void resetView() {
+        this.zoomLevel = 100;
+        this.dragPositionX = 0;
+        this.dragPositionY = 0;
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

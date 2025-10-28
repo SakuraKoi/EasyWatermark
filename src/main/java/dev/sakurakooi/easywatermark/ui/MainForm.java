@@ -97,6 +97,7 @@ public class MainForm extends JFrame {
                     if(!droppedFiles.isEmpty()) {
                         processingFile = droppedFiles.get(0);
                         processingImage = javax.imageio.ImageIO.read(processingFile);
+                        imgPreviewer.resetView();
                         renderImage();
                     }
                     evt.dropComplete(true);
