@@ -1,0 +1,242 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+			"$columnCount": 2
+			"$rowCount": 1
+			"hGap": 8
+			"vGap": 8
+			"margin": new java.awt.Insets( 8, 8, 8, 8 )
+		} ) {
+			name: "this"
+			"title": "EasyWatermark"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+				"$columnCount": 1
+				"$rowCount": 2
+				"hGap": 8
+				"vGap": 8
+			} ) {
+				name: "panel1"
+				add( new FormComponent( "dev.sakurakooi.easywatermark.ui.JImagePanel" ) {
+					name: "imgPreviewer"
+					"border": new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, false )
+					addEvent( new FormEvent( "java.awt.event.ComponentListener", "componentResized", "imgPreviewerComponentResized", true ) )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+					"vSizePolicy": 7
+				} )
+				add( new FormComponent( "javax.swing.JSlider" ) {
+					name: "valueSlider"
+					"enabled": false
+					addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "valueSliderStateChanged", true ) )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"row": 1
+					"fill": 3
+					"preferredSize": new java.awt.Dimension( 0, 16 )
+					"maximumSize": new java.awt.Dimension( 9999, 24 )
+				} )
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"fill": 3
+				"hSizePolicy": 7
+				"vSizePolicy": 7
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+				"$columnCount": 1
+				"$rowCount": 9
+				"vGap": 8
+			} ) {
+				name: "panel3"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 1
+					"$rowCount": 2
+				} ) {
+					name: "panel2"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Watermark"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"fill": 3
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "editWatermark"
+						addEvent( new FormEvent( "javax.swing.event.CaretListener", "caretUpdate", "editWatermarkCaretUpdate", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+						"fill": 3
+						"minimumSize": new java.awt.Dimension( 256, 16 )
+					} )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 1
+					"$rowCount": 2
+				} ) {
+					name: "panel4"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "Font"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"fill": 3
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "editFont"
+						"editable": false
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "editFontMouseClicked", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+						"fill": 3
+						"minimumSize": new java.awt.Dimension( 256, 64 )
+						"maximumSize": new java.awt.Dimension( 256, 64 )
+					} )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+					"row": 1
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 1
+					"$rowCount": 2
+				} ) {
+					name: "panel9"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label7"
+						"text": "Color"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"fill": 3
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "editColor"
+						"editable": false
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "editColorMouseClicked", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+						"fill": 3
+					} )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+					"row": 2
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 1
+					"$rowCount": 2
+				} ) {
+					name: "panel5"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label3"
+						"text": "Gap X"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"fill": 3
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "inputGapX"
+						"model": new javax.swing.SpinnerNumberModel {
+							minimum: 0
+						}
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "inputGapXStateChanged", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+						"fill": 3
+					} )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+					"row": 3
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 1
+					"$rowCount": 2
+				} ) {
+					name: "panel6"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label4"
+						"text": "Gap Y"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"fill": 3
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "inputGapY"
+						"model": new javax.swing.SpinnerNumberModel {
+							minimum: 0
+						}
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "inputGapYStateChanged", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+						"fill": 3
+					} )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+					"row": 4
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 1
+					"$rowCount": 2
+				} ) {
+					name: "panel7"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label5"
+						"text": "Rotate"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"fill": 3
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "inputRotate"
+						"model": new javax.swing.SpinnerNumberModel( 0, 0, 360, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "inputRotateStateChanged", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+						"fill": 3
+					} )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+					"row": 5
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 1
+					"$rowCount": 2
+				} ) {
+					name: "panel8"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label6"
+						"text": "Transparency"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"fill": 3
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "inputTransparency"
+						"model": new javax.swing.SpinnerNumberModel( 128, 0, 255, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "inputTransparencyStateChanged", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+						"fill": 3
+					} )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+					"row": 6
+				} )
+				add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+					name: "vSpacer1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"row": 7
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnSave"
+					"text": "Save"
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"row": 8
+					"fill": 3
+					"minimumSize": new java.awt.Dimension( 10, 64 )
+				} )
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"column": 1
+				"fill": 3
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 965, 760 )
+		} )
+	}
+}
