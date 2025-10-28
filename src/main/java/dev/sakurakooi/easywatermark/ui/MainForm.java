@@ -12,6 +12,7 @@ import dev.sakurakooi.easywatermark.WatermarkRenderer;
 import dev.sakurakooi.easywatermark.pojo.Configuration;
 import io.github.bhowell2.debouncer.Debouncer;
 import lombok.SneakyThrows;
+import org.apache.commons.io.FilenameUtils;
 import org.drjekyll.fontchooser.FontDialog;
 
 import javax.swing.*;
@@ -238,6 +239,17 @@ public class MainForm extends JFrame {
         configuration.setFontSize((Integer) inputFontSize.getValue());
         renderImage();
         saveConfig();
+    }
+
+    private void btnSave(ActionEvent e) {
+        File outputFile = new File(processingFile.getParentFile(), "watermarked_" + FilenameUtils.removeExtension(processingFile.getName()) + ".png");
+        try {
+            javax.imageio.ImageIO.write(watermarkedImage, "PNG", outputFile);
+            JOptionPane.showMessageDialog(this, "Saved to " + outputFile.getAbsolutePath(), "Saved", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to save image: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void initComponents() {
@@ -547,6 +559,7 @@ public class MainForm extends JFrame {
 
             //---- btnSave ----
             btnSave.setText("Save");
+            btnSave.addActionListener(e -> btnSave(e));
             panel3.add(btnSave, new GridConstraints(9, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
