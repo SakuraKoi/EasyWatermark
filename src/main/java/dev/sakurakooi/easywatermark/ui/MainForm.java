@@ -157,7 +157,6 @@ public class MainForm extends JFrame {
         dialog.setVisible(true);
         if (!dialog.isCancelSelected()) {
             configuration.setFont(dialog.getSelectedFont().getFamily());
-            configuration.setFontSize(dialog.getSelectedFont().getSize());
             configuration.setFontStyle(dialog.getSelectedFont().getStyle());
             renderImage();
 
