@@ -4,13 +4,10 @@
 
 package dev.sakurakooi.easywatermark.ui;
 
-import java.awt.event.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
 import com.alibaba.fastjson.JSON;
-import com.intellij.uiDesigner.core.*;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import dev.sakurakooi.easywatermark.WatermarkRenderer;
 import dev.sakurakooi.easywatermark.pojo.Configuration;
 import io.github.bhowell2.debouncer.Debouncer;
@@ -18,11 +15,15 @@ import lombok.SneakyThrows;
 import org.drjekyll.fontchooser.FontDialog;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * @author sakura
  */
 public class MainForm extends JFrame {
-    private Debouncer debouncer = new Debouncer(1);
+    private Debouncer debouncer = new Debouncer(2);
     private Configuration configuration;
 
     private File processingFile;
@@ -65,7 +66,7 @@ public class MainForm extends JFrame {
 
         editWatermark.setText(configuration.getText());
         editFont.setText(configuration.getFont());
-        editFont.setFont(new Font(configuration.getFont(), configuration.getFontStyle(), configuration.getFontSize()));
+        editFont.setFont(new Font(configuration.getFont(), configuration.getFontStyle(), 24));
         editColor.setText("#" + Long.toHexString(configuration.getColor()).toUpperCase());
         editColor.setBackground(new Color((int) (configuration.getColor() & 0xFFFFFFFFL), true));
         editColor.setForeground(new Color((int) (~configuration.getColor() & 0x00FFFFFFL) | 0xFF000000, true));
@@ -73,11 +74,12 @@ public class MainForm extends JFrame {
         inputGapY.setValue(configuration.getGapY());
         inputRotate.setValue(configuration.getRotate());
         inputTransparency.setValue(configuration.getTransparency());
+        inputFontSize.setValue(configuration.getFontSize());
     }
 
     private void saveConfig() {
         //noinspection unchecked
-        debouncer.addRunLast(15, TimeUnit.MILLISECONDS, "save", k -> {
+        debouncer.addRunLast(500, TimeUnit.MILLISECONDS, "save", k -> {
             File configFile = new File("config.json");
             try {
                 Files.writeString(configFile.toPath(), JSON.toJSONString(configuration));
@@ -94,11 +96,13 @@ public class MainForm extends JFrame {
                     evt.acceptDrop(DnDConstants.ACTION_COPY);
                     //noinspection unchecked
                     List<File> droppedFiles = (List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                    if(!droppedFiles.isEmpty()) {
+                    if (!droppedFiles.isEmpty()) {
                         processingFile = droppedFiles.get(0);
                         processingImage = javax.imageio.ImageIO.read(processingFile);
-                        renderImage();
-                        imgPreviewer.resetView();
+                        renderImage(() -> {
+                            imgPreviewer.resetView();
+                        });
+
                     }
                     evt.dropComplete(true);
                 } catch (Exception ex) {
@@ -110,6 +114,7 @@ public class MainForm extends JFrame {
         registerFocusListenerForSpinner(inputGapY);
         registerFocusListenerForSpinner(inputRotate);
         registerFocusListenerForSpinner(inputTransparency);
+        registerFocusListenerForSpinner(inputFontSize);
     }
 
     private void registerFocusListenerForSpinner(JSpinner spinner) {
@@ -122,9 +127,19 @@ public class MainForm extends JFrame {
     }
 
     private void renderImage() {
+        renderImage(null);
+    }
+
+    private void renderImage(Runnable task) {
         if (processingImage != null) {
-            watermarkedImage = WatermarkRenderer.renderWatermark(processingImage, configuration);
-            displayPreview();
+            //noinspection unchecked
+            debouncer.addRunLast(100, 200, TimeUnit.MILLISECONDS, "render", k -> {
+                watermarkedImage = WatermarkRenderer.renderWatermark(processingImage, configuration);
+                displayPreview();
+                if (task != null) {
+                    SwingUtilities.invokeLater(task);
+                }
+            });
         }
     }
 
@@ -147,7 +162,7 @@ public class MainForm extends JFrame {
             renderImage();
 
             editFont.setText(configuration.getFont());
-            editFont.setFont(dialog.getSelectedFont());
+            editFont.setFont(new Font(configuration.getFont(), configuration.getFontStyle(), 24));
             saveConfig();
         }
     }
@@ -187,11 +202,12 @@ public class MainForm extends JFrame {
     private void applyFocusSpinner(JSpinner spinner) {
         focusedSpinner = spinner;
         SpinnerNumberModel model = (SpinnerNumberModel) spinner.getModel();
-        valueSlider.setModel(new DefaultBoundedRangeModel((Integer) spinner.getValue(), 0, (Integer) model.getMinimum(), Objects.requireNonNullElse((Integer) model.getMaximum(), 255)));
+        valueSlider.setModel(new DefaultBoundedRangeModel((Integer) spinner.getValue(), 0, (Integer) model.getMinimum(), Objects.requireNonNullElse((Integer) model.getMaximum(), 2048)));
         inputGapX.setBackground(spinner == inputGapX ? Color.YELLOW : Color.WHITE);
         inputGapY.setBackground(spinner == inputGapY ? Color.YELLOW : Color.WHITE);
         inputRotate.setBackground(spinner == inputRotate ? Color.YELLOW : Color.WHITE);
         inputTransparency.setBackground(spinner == inputTransparency ? Color.YELLOW : Color.WHITE);
+        inputFontSize.setBackground(spinner == inputFontSize ? Color.YELLOW : Color.WHITE);
         valueSlider.setEnabled(true);
     }
 
@@ -199,7 +215,7 @@ public class MainForm extends JFrame {
         if (focusedSpinner != null) {
             focusedSpinner.setValue(valueSlider.getValue());
             //renderImage();
-           // saveConfig();
+            // saveConfig();
         }
     }
 
@@ -219,6 +235,12 @@ public class MainForm extends JFrame {
         imgPreviewer.repaint();
     }
 
+    private void inputFontSizeStateChanged(ChangeEvent e) {
+        configuration.setFontSize((Integer) inputFontSize.getValue());
+        renderImage();
+        saveConfig();
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         panel1 = new JPanel();
@@ -231,6 +253,9 @@ public class MainForm extends JFrame {
         panel4 = new JPanel();
         label2 = new JLabel();
         editFont = new JTextField();
+        panel10 = new JPanel();
+        label8 = new JLabel();
+        inputFontSize = new JSpinner();
         panel9 = new JPanel();
         label7 = new JLabel();
         editColor = new JTextField();
@@ -289,7 +314,7 @@ public class MainForm extends JFrame {
 
         //======== panel3 ========
         {
-            panel3.setLayout(new GridLayoutManager(9, 1, new Insets(0, 0, 0, 0), -1, 8));
+            panel3.setLayout(new GridLayoutManager(10, 1, new Insets(0, 0, 0, 0), -1, 8));
 
             //======== panel2 ========
             {
@@ -339,11 +364,38 @@ public class MainForm extends JFrame {
                 });
                 panel4.add(editFont, new GridConstraints(1, 0, 1, 1,
                     GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-                    GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                    GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                    new Dimension(256, 64), null, new Dimension(256, 64)));
+                    GridConstraints.SIZEPOLICY_FIXED,
+                    GridConstraints.SIZEPOLICY_FIXED,
+                    new Dimension(256, 48), null, new Dimension(256, 48)));
             }
             panel3.add(panel4, new GridConstraints(1, 0, 1, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                null, null, null));
+
+            //======== panel10 ========
+            {
+                panel10.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+
+                //---- label8 ----
+                label8.setText("Font Size");
+                panel10.add(label8, new GridConstraints(0, 0, 1, 1,
+                    GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                    GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                    GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                    null, null, null));
+
+                //---- inputFontSize ----
+                inputFontSize.setModel(new SpinnerNumberModel(1, 1, 2048, 1));
+                inputFontSize.addChangeListener(e -> inputFontSizeStateChanged(e));
+                panel10.add(inputFontSize, new GridConstraints(1, 0, 1, 1,
+                    GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                    GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                    GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                    null, null, null));
+            }
+            panel3.add(panel10, new GridConstraints(2, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -375,7 +427,7 @@ public class MainForm extends JFrame {
                     GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                     null, null, null));
             }
-            panel3.add(panel9, new GridConstraints(2, 0, 1, 1,
+            panel3.add(panel9, new GridConstraints(3, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -402,7 +454,7 @@ public class MainForm extends JFrame {
                     GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                     null, null, null));
             }
-            panel3.add(panel5, new GridConstraints(3, 0, 1, 1,
+            panel3.add(panel5, new GridConstraints(4, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -429,7 +481,7 @@ public class MainForm extends JFrame {
                     GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                     null, null, null));
             }
-            panel3.add(panel6, new GridConstraints(4, 0, 1, 1,
+            panel3.add(panel6, new GridConstraints(5, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -456,7 +508,7 @@ public class MainForm extends JFrame {
                     GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                     null, null, null));
             }
-            panel3.add(panel7, new GridConstraints(5, 0, 1, 1,
+            panel3.add(panel7, new GridConstraints(6, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -483,12 +535,12 @@ public class MainForm extends JFrame {
                     GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                     null, null, null));
             }
-            panel3.add(panel8, new GridConstraints(6, 0, 1, 1,
+            panel3.add(panel8, new GridConstraints(7, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 null, null, null));
-            panel3.add(vSpacer1, new GridConstraints(7, 0, 1, 1,
+            panel3.add(vSpacer1, new GridConstraints(8, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK,
                 GridConstraints.SIZEPOLICY_CAN_GROW | GridConstraints.SIZEPOLICY_WANT_GROW,
@@ -496,7 +548,7 @@ public class MainForm extends JFrame {
 
             //---- btnSave ----
             btnSave.setText("Save");
-            panel3.add(btnSave, new GridConstraints(8, 0, 1, 1,
+            panel3.add(btnSave, new GridConstraints(9, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -523,6 +575,9 @@ public class MainForm extends JFrame {
     private JPanel panel4;
     private JLabel label2;
     private JTextField editFont;
+    private JPanel panel10;
+    private JLabel label8;
+    private JSpinner inputFontSize;
     private JPanel panel9;
     private JLabel label7;
     private JTextField editColor;

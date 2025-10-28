@@ -44,7 +44,7 @@ new FormModel {
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
 				"$columnCount": 1
-				"$rowCount": 9
+				"$rowCount": 10
 				"vGap": 8
 			} ) {
 				name: "panel3"
@@ -88,12 +88,37 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
 						"row": 1
 						"fill": 3
-						"minimumSize": new java.awt.Dimension( 256, 64 )
-						"maximumSize": new java.awt.Dimension( 256, 64 )
+						"minimumSize": new java.awt.Dimension( 256, 48 )
+						"maximumSize": new java.awt.Dimension( 256, 48 )
+						"hSizePolicy": 0
+						"vSizePolicy": 0
 					} )
 				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
 					"fill": 3
 					"row": 1
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 1
+					"$rowCount": 2
+				} ) {
+					name: "panel10"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label8"
+						"text": "Font Size"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"fill": 3
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "inputFontSize"
+						"model": new javax.swing.SpinnerNumberModel( 1, 1, 2048, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "inputFontSizeStateChanged", true ) )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 1
+						"fill": 3
+					} )
+				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+					"fill": 3
+					"row": 2
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
 					"$columnCount": 1
@@ -116,7 +141,7 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
 					"fill": 3
-					"row": 2
+					"row": 3
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
 					"$columnCount": 1
@@ -141,7 +166,7 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
 					"fill": 3
-					"row": 3
+					"row": 4
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
 					"$columnCount": 1
@@ -166,7 +191,7 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
 					"fill": 3
-					"row": 4
+					"row": 5
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
 					"$columnCount": 1
@@ -189,7 +214,7 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
 					"fill": 3
-					"row": 5
+					"row": 6
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
 					"$columnCount": 1
@@ -212,7 +237,7 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
 					"fill": 3
-					"row": 6
+					"row": 7
 				} )
 				add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
 					name: "vSpacer1"
@@ -220,13 +245,13 @@ new FormModel {
 						"JavaCodeGenerator.variableLocal": true
 					}
 				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
-					"row": 7
+					"row": 8
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnSave"
 					"text": "Save"
 				}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
-					"row": 8
+					"row": 9
 					"fill": 3
 					"minimumSize": new java.awt.Dimension( 10, 64 )
 				} )
