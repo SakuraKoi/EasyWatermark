@@ -70,18 +70,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>dev.sakurakooi.easywatermark.Bootstrap</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
@@ -92,6 +80,11 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>dev.sakurakooi.easywatermark.Bootstrap</mainClass>
+                        </manifest>
+                    </archive>
                     <finalName>easy-watermark</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptorRefs>
