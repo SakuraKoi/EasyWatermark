@@ -100,10 +100,10 @@ public class MainForm extends JFrame {
                     if (!droppedFiles.isEmpty()) {
                         processingFile = droppedFiles.get(0);
                         processingImage = javax.imageio.ImageIO.read(processingFile);
+                        btnSave.setText("Save");
                         renderImage(() -> {
                             imgPreviewer.resetView();
                         });
-
                     }
                     evt.dropComplete(true);
                 } catch (Exception ex) {
@@ -245,7 +245,8 @@ public class MainForm extends JFrame {
         File outputFile = new File(processingFile.getParentFile(), "watermarked_" + FilenameUtils.removeExtension(processingFile.getName()) + ".png");
         try {
             javax.imageio.ImageIO.write(watermarkedImage, "PNG", outputFile);
-            JOptionPane.showMessageDialog(this, "Saved to " + outputFile.getAbsolutePath(), "Saved", JOptionPane.INFORMATION_MESSAGE);
+            btnSave.setText("Save [OK!]");
+            //JOptionPane.showMessageDialog(this, "Saved to " + outputFile.getAbsolutePath(), "Saved", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to save image: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
